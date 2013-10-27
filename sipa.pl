@@ -1,5 +1,5 @@
 #!/bin/perl
-#Spanish Document Fixer
+#Spanish IPA Tool
 #By Billy Rhoades
 
 use File::Basename;

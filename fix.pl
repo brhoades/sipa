@@ -48,9 +48,9 @@ while($in = <$fh>)
         $start = $1;
         $end = $3;
         
-        $ches += $match =~ s/([t])\|/$1\x{222B}/g;
-        $dete += $match =~ s/(d|t)([^\\]?)/$1\x{032A}$2/g;
-        $tilde +=  $match =~ s/([aeiou])~/$1\x{0330}/g;
+        $dete += $match =~ s/(d|t)([^\|])/$1\x{032A}/g;
+        $ches += $match =~ s/t\|/t\x{0283}/g;
+        $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;
         $erre +=  $match =~ s/([r])_/$1\x{0304}/g; #305 is larger
         $underline += $match =~ s/([aeiou])\_/$1\x{0332}/g;
         $double += $match =~ s/([aeiou])\=/$1\x{0333}/g;
@@ -65,8 +65,11 @@ while($in = <$fh>)
     for $sub (@subs)
     {
         ($orig, $match, $start, $end) = @$sub;
-                
-        $in =~ s/\Q$start\E$orig\Q$end\E/$start$match$end/;
+        
+        
+        print("$orig", " ", $match, "\n");
+        
+        $in =~ s/\Q$start$orig$end\E/$start$match$end/;
     }
  
     push @file, $in;

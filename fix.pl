@@ -87,10 +87,9 @@ binmode( $fh, ":utf8");
 for my $line (@file)
 {
   print $fh $line."\n";
-  #print $line."\n";
 }
 
-
+##Status report
 print("Trill <rr>:\t $erre\n");
 print("<y> <ll>:\t $lla\n");
 print("<ch>:\t\t $ches\n");
@@ -101,49 +100,29 @@ print("Underline:\t $underline\n");
 print("Double underline $double\n");
 print("\n\n");
 
+##Create the ODF
 print("Recreating ODF: ");
-unlink "/tmp/temp.new.odt" if( -e "/tmp/temp.new.odt" );
-unlink "/tmp/temp.new.pdf" if( -e "/tmp/temp.new.pdf" );
-system("cd $out && zip -q9pr \"/tmp/temp.new.odt\" *");
-print(-e "/tmp/temp.new.odt" ? "done" : "failed", "\nCreating PDF: ");
-system("libreoffice --headless --invisible --convert-to pdf /tmp/temp.new.odt --outdir /tmp/");
+unlink "/tmp/temp.odt" if( -e "/tmp/temp.odt" );
 
-=pod
-my $doc = OpenOffice::OODoc::Text->new(file => $ARGV[0]);
-$doc->selectTextContent( qr/[A-Za-z\p{C}\p{M}\p{L}\-]+/, \&parse );
-sub parse
-{
-    my ($d, $element, $value) = @_;
-    #print 
-    #print $element."\n";
-}
+#Zip it
+system("cd $out && zip -q9pr \"/tmp/temp.odt\" *");
 
-open($fh2, ">", "/home/aaron/look");
-binmode( $fh, ":utf8");
-my ($row, $col ) = $doc->getTable(0);
-$table = $doc->normalizeSheet(0, 'full');
-for(my $i=0; $i<$row; $i++)
-{
-    for(my $j=0; $j<$col; $j++)
-    {
-        $cell = $doc->getCell($table, $i, $j);
-        $text = $doc->getFlatText($cell);
-        print Dumper $cell;
-        print "\n\n";
-        #print $fh2 $text;
-    }
-}
-close($fh2);
-=cut
+#Delete the old contents
+rmtree($out);
 
+print(-e "/tmp/temp.odt" ? "done" : "failed");
+
+##find our new name
 $newbname = basename($ARGV[0]);
 $oldbname = $newbname;
-$newbname =~ s/\.odt/\.pdf/i;
-$newbname .= ".pdf" if( !($newbname =~ m/\.pdf$/) );
+$newbname =~ s/\.odt/.new/i;
+$newbname .= ".odt" if( !($newbname =~ m/\.odt$/) );
 $newname = $ARGV[0];
 $newname =~ s/$oldbname/$newbname/;
-print(-e "/tmp/temp.new.pdf" ? "done" : "failed", "\nMoving PDF: ");
-unlink $newname if( -e $newname );
-sleep 2;
-system("cp /tmp/temp.new.pdf $newname");
+
+print("\nMoving ODT (give me a sec): ");
+unlink $newname and sleep(2) if( -e $newname );
+
+##Move!
+system("mv /tmp/temp.odt $newname");
 print(-e $newname ? "done" : "failed", "\n");

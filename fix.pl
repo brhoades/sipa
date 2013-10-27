@@ -5,30 +5,24 @@ use Data::Dumper;
 use File::Path;
 use OpenOffice::OODoc::Text;
 
-$ENV{'PERL_PERTURB_KEYS'} = 0;
-
-exit 0 if( not $ARGV[0] );
-
 binmode( STDOUT, ":utf8");
 binmode( STDIN, ":utf8");
 
+$ENV{'PERL_PERTURB_KEYS'} = 0;
+
+print("Missing second argument\n") and exit 0 if( not $ARGV[0] );
+
 $out = "/tmp/".basename($ARGV[0])."/";
+
+#Crashed?
 rmtree($out) if -e $out;
+
 print("Extracting ODF: ");
 system("unzip -qqo \"".$ARGV[0]."\" -d \"$out\"");
+
 print( ( -e $out ? "Done" : "Failed!" )."\n" );
 
-# tie my @array, 'Tie::File', $out."content.xml" or die $!;
-# print("Done\n");
-
-$tilde = 0;
-
-$erre = 0;
-$ches = 0;
-$dete = 0;
-$diaeresis = 0;
-$underline = 0;
-$double = 0;
+my ($tilde, $erre, $ches, $dete, $diaeresis, $underline, $double) = 0;
 
 my @file;
 my $fh;
@@ -72,7 +66,6 @@ while($in = <$fh>)
     {
         ($orig, $match, $start, $end) = @$sub;
                 
-        #print($start,$orig,$end, " ===> ", $start,$match,$end, "\n");
         $in =~ s/\Q$start\E$orig\Q$end\E/$start$match$end/;
     }
  
@@ -110,7 +103,7 @@ system("cd $out && zip -q9pr \"/tmp/temp.odt\" *");
 #Delete the old contents
 rmtree($out);
 
-print(-e "/tmp/temp.odt" ? "done" : "failed");
+print(-e "/tmp/temp.odt" ? "Done" : "Failed");
 
 ##find our new name
 $newbname = basename($ARGV[0]);
@@ -125,4 +118,4 @@ unlink $newname and sleep(2) if( -e $newname );
 
 ##Move!
 system("mv /tmp/temp.odt $newname");
-print(-e $newname ? "done" : "failed", "\n");
+print(-e $newname ? "Done" : "Failed", "\n");

@@ -48,7 +48,7 @@ while($in = <$fh>)
         $start = $1;
         $end = $3;
         
-        $dete += $match =~ s/(d|t)([^\|])/$1\x{032A}/g;
+        $dete += $match =~ s/(d|t)([^\|])/$1\x{032A}$2/g; #For some reason we need to match this second character
         $ches += $match =~ s/t\|/t\x{0283}/g;
         $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;
         $erre +=  $match =~ s/([r])_/$1\x{0304}/g; #305 is larger

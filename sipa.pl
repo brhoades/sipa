@@ -58,7 +58,7 @@ while($in = <$fh>)
         $underline += $match =~ s/([aeiou])\_/$1\x{0332}/g;
         $double += $match =~ s/([aeiou])\=/$1\x{0333}/g;
         $diaeresis += $match =~ s/([a-z])\.\./$1\x{0308}/g;
-        $lla += $match =~ s/([y])\^/$1\x{}/g;
+        $lla += $match =~ s/([y])\^/$1\x{030C}/g;
         
         push @subs, [$original, $match, $start, $end ] if( $match ne $original );
     }

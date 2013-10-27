@@ -1,13 +1,16 @@
 #!/bin/perl
+#Spanish Document Fixer
+#By Billy Rhoades
+
 use File::Basename;
-use warnings;
-use Data::Dumper;
 use File::Path;
-use OpenOffice::OODoc::Text;
+
+use warnings;
 
 binmode( STDOUT, ":utf8");
 binmode( STDIN, ":utf8");
 
+#Don't scramble keys, libreoffice will scream if stuff is out of order
 $ENV{'PERL_PERTURB_KEYS'} = 0;
 
 print("Missing second argument\n") and exit 0 if( not $ARGV[0] );
@@ -56,19 +59,16 @@ while($in = <$fh>)
         $double += $match =~ s/([aeiou])\=/$1\x{0333}/g;
         $diaeresis += $match =~ s/([a-z])\.\./$1\x{0308}/g;
         $lla += $match =~ s/([y])\^/$1\x{}/g;
-
-        #$in =~ s/$original/$match/;
         
         push @subs, [$original, $match, $start, $end ] if( $match ne $original );
     }
     
+    #substitute out, perl doesn't like it if we sub on the fly
     for $sub (@subs)
     {
         ($orig, $match, $start, $end) = @$sub;
         
-        
-        print("$orig", " ", $match, "\n");
-        
+                
         $in =~ s/\Q$start$orig$end\E/$start$match$end/;
     }
  

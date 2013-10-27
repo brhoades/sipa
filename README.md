@@ -11,13 +11,13 @@ A evenly spaced font (MONO) is recommended. The document will be outputted, with
 at <inputfilename>.new.odt in the same directory.
  
  * <ch>       t|    tʃ
- * <d>        d     ̪t
- * <t>        t     ̪t
+ * <d>        d     d̪
+ * <t>        t     t̪
  * <ll> <y>   y^    y̌
  * diaeresis  a..   ä
  * semivowel  a~    a̰
  * stress     a_    a̲
- * 2xstress   a=    ̳a
+ * 2xstress   a=    a̳
  
  ====
  

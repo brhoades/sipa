@@ -23,7 +23,7 @@ at <inputfilename>.new.odt in the same directory.
 | stress        | a_    | a̲        |
 | 2xstress      | a=    | a̳        |
 
-tbar is equivilant to t|
+tbar is equivalent to t|
 
 
 ====

@@ -22,6 +22,7 @@ at <inputfilename>.new.odt in the same directory.
 | semivowel     | a~    | a̰        |
 | stress        | a_    | a̲        |
 | 2xstress      | a=    | a̳        |
+| strikethrough | (bdg)_| bg̶d̶̶      |
 
 tbar is equivalent to t|
 

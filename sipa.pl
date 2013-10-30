@@ -25,24 +25,30 @@ system("unzip -qqo \"".$ARGV[0]."\" -d \"$out\"");
 
 print( ( -e $out ? "Done" : "Failed!" )."\n" );
 
-my ($tilde, $erre, $ches, $dete, $diaeresis, $underline, $double) = 0;
+#Counters
+my ($tilde, $erre, $ches, $dete, $diaeresis, $underline, $double, $ktp) = 0;
 
 my @file;
 my $fh;
 open($fh, "<", $out."content.xml");
 binmode( $fh, ":utf8");
+
+#Slurp mode
 $| = 1;
 
+#Replace loop
 while($in = <$fh>)
 {
+    #odts usually have only one line that has what we want
     $text = $in =~ m/\<text/g;
     if( $text < 1 )
     {
         push @file, $in if( defined $in );
         next;
     }
-    my @subs;
-    
+
+    #find [..] and /../
+    my @subs;    
     while( $in =~ m/(\/|\[)([a-z\~\^\_\.\|\-\p{Letter}\p{Mark}\s]+)(\/|\])/gi )
     {
         next if( not defined $2 );
@@ -50,14 +56,30 @@ while($in = <$fh>)
         $original = $2;
         $start = $1;
         $end = $3;
-        
-        $dete += $match =~ s/(d|t)([^\|])/$1\x{032A}$2/g; #For some reason we need to match this second character
+	#d / t => d/t w/ dental        
+        $dete += $match =~ s/(d|t)([^\|\_])/$1\x{032A}$2/g; #For some reason we need to match this second character
+
+	#t| => t w/ baby sigma
         $ches += $match =~ s/t\|/t\x{0283}/g;
+
+	#b,g,d_ => b,g,d strikethrough
+        $ktp += $match =~ s/([bgd])\_/$1\x{0336}/g;
+
+	#a,e,i,o,u~ => a,e,i,o,u w/ tilde below
         $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;
+	
+	#r_ => r with line on top
         $erre +=  $match =~ s/([r])_/$1\x{0304}/g; #305 is larger
+
+	#a,e,i,o,u_ => a,e,i,o,u w/ line below (stress)
         $underline += $match =~ s/([aeiou])\_/$1\x{0332}/g;
+	#a,e,i,o,u= => a,e,i,o,u w/ double line below (stress)
         $double += $match =~ s/([aeiou])\=/$1\x{0333}/g;
+
+	#a-z.. => a-z w/ diaeresis (umlaut) on top
         $diaeresis += $match =~ s/([a-z])\.\./$1\x{0308}/g;
+
+	#y^ => y with upside down ^ above
         $lla += $match =~ s/([y])\^/$1\x{030C}/g;
         
         push @subs, [$original, $match, $start, $end ] if( $match ne $original );
@@ -86,14 +108,15 @@ for my $line (@file)
 }
 
 ##Status report
-print("Trill <rr>:\t $erre\n");
-print("<y> <ll>:\t $lla\n");
-print("<ch>:\t\t $ches\n");
-print("Diaresis:\t $diaeresis\n");
-print("Semivowels:\t $tilde\n");
-print("Teeth (d/t):\t $dete\n");
-print("Underline:\t $underline\n");
-print("Double underline $double\n");
+print("Trill <rr>:\t\t $erre\n");
+print("<y> <ll>:\t\t $lla\n");
+print("<ch>:\t\t\t $ches\n");
+print("Diaresis:\t\t $diaeresis\n");
+print("Semivowels:\t\t $tilde\n");
+print("Teeth (d/t):\t\t $dete\n");
+print("(b,t,k) strikeout:\t $ktp\n");
+print("Underline:\t\t $underline\n");
+print("Double underline:\t $double\n");
 print("\n\n");
 
 ##Create the ODF

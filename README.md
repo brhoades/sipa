@@ -13,7 +13,8 @@ wrote this script to allow the use of quick shortcuts in a text document with un
 All d's and t's will automatically have dental marks placed under them if they aren't
 followed by something used in a different pattern. Everything else 
 requires a trailing symbol. This script will output a new document with .new before the
-type in the same directory that has the shortcuts translated to the actual symbols.
+extension in the same directory. This new document has the shortcuts translated 
+to the actual symbols.
 
 ====
 

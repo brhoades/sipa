@@ -56,15 +56,19 @@ while($in = <$fh>)
         $original = $2;
         $start = $1;
         $end = $3;
+	checkInternals($start, $match);
+
 	#d / t => d/t w/ dental        
         $dete += $match =~ s/(d|t)([^\|\_])/$1\x{032A}$2/g; #For some reason we need to match this second character
 
 	#t| => t w/ baby sigma
         $ches += $match =~ s/t\|/t\x{0283}/g;
 
-	#b,g,d_ => b,g,d strikethrough
-        $ktp += $match =~ s/([bgd])\_/$1\x{0336}/g;
-
+	#b,g,d_ => beta, gamma, delta respectively. Lowercase.
+        $ktp += $match =~ s/b\_/\x{03B2}/g;
+        $ktp += $match =~ s/g\_/\x{0263}/g;
+        $ktp += $match =~ s/d\_/\x{1E9F}/g;
+        
 	#a,e,i,o,u~ => a,e,i,o,u w/ tilde below
         $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;
 	
@@ -114,7 +118,7 @@ print("<ch>:\t\t\t $ches\n");
 print("Diaresis:\t\t $diaeresis\n");
 print("Semivowels:\t\t $tilde\n");
 print("Teeth (d/t):\t\t $dete\n");
-print("(b,t,k) strikeout:\t $ktp\n");
+print("(b,t,k) allophones:\t $ktp\n");
 print("Underline:\t\t $underline\n");
 print("Double underline:\t $double\n");
 print("\n\n");
@@ -145,3 +149,11 @@ unlink $newname and sleep(2) if( -e $newname );
 ##Move!
 system("mv /tmp/temp.odt $newname");
 print(-e $newname ? "Done" : "Failed", "\n");
+
+####END OF MAIN
+
+sub checkInternals
+{
+  my ($inside, $type) = @_;
+
+}

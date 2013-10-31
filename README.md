@@ -28,10 +28,11 @@ perl sipa.pl /home/brhoades/spanish/0.2.1.odt
 This script will only function on odt files. These files can be saved with Word 2007+ and 
 natively with any version of Open/Libre Office, but
 the script must be ran on cygwin or Linux. Please also note that combining symbols work best
-with certain fonts. Cambria has worked best on both Windows and Ubuntu. Additionally, due to
+with certain fonts. Cambria has worked best on both Windows and Ubuntu, through Open/Libre Office 
+and Word, however your milage may vary. Additionally, due to
 limitations of the open document format **do not switch fonts, sizes, or use italics/bold/underline
-inside transcriptions**. This script will ignore the entry if this is done to preserve
-integrity of non-phonemic test. If you are attempting to remove formatting
+inside transcriptions**. This script will ignore the entry if this is done in order to preserve
+integrity of non-phonemic text. If you are attempting to remove formatting
 from a document, you will need to completely retype the text in most cases to remove the 
 special formatting from the internals of your document.
 

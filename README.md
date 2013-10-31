@@ -25,6 +25,7 @@ at <inputfilename>.new.odt in the same directory.
 | beta          | b_    | β        |
 | gamma         | g_    | ɣ        |
 | delta         | d_    | ẟ        |
+
 tbar is equivalent to t|
 
 

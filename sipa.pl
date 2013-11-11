@@ -67,7 +67,7 @@ while($in = <$fh>)
 	#b,g,d_ => beta, gamma, delta respectively. Lowercase.
         $ktp += $match =~ s/b\_/\x{03B2}/g;
         $ktp += $match =~ s/g\_/\x{0263}/g;
-        $ktp += $match =~ s/d\_/\x{1E9F}/g;
+        $ktp += $match =~ s/d\_/\x{03B4}/g;
         
 	#a,e,i,o,u~ => a,e,i,o,u w/ tilde below
         $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;

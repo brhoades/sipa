@@ -58,8 +58,15 @@ while($in = <$fh>)
         $end = $3;
 	checkInternals($start, $match);
 
+	#n + t / d => nd / nt w/ denta on n
+	$ntd += $match =~ s/(n)(t|d)/$1\x{032A}$2/g;
+
 	#d / t => d/t w/ dental        
-        $dete += $match =~ s/(d|t)([^\|\_])/$1\x{032A}$2/g; #For some reason we need to match this second character
+        $dete += $match =~ s/(d|t)([^\|\_|\\])/$1\x{032A}$2/g; #For some reason we need to match this second character
+
+	#n, / m, => n / m with curly right side
+	$mnwifhook += $match =~ s/m\,/\x{0271}/g;
+	$mnwifhook += $match =~ s/n\,/\x{014B}/g;
 
 	#t| => t w/ baby sigma
         $ches += $match =~ s/t\|/t\x{0283}/g;
@@ -70,8 +77,8 @@ while($in = <$fh>)
         $ktp += $match =~ s/d\_/\x{03B4}/g;
         
 	#a,e,i,o,u~ => a,e,i,o,u w/ tilde below
-        $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;
-	
+        $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;	
+
 	#r_ => r with line on top
         $erre +=  $match =~ s/([r])_/$1\x{0304}/g; #305 is larger
 

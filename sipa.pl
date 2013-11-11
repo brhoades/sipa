@@ -59,7 +59,9 @@ while($in = <$fh>)
 	checkInternals($start, $match);
 
 	#n + t / d => nd / nt w/ denta on n
-	$ntd += $match =~ s/(n)(t|d)/$1\x{032A}$2/g;
+	#$ntd += $match =~ s/(n)(t|d)/$1\x{032A}$2/g;
+	$ntd += $match =~ s/(n)\-(t|d)/$1\x{032A}\-$2/g;
+
 
 	#d / t => d/t w/ dental        
         $dete += $match =~ s/(d|t)([^\|\_|\\])/$1\x{032A}$2/g; #For some reason we need to match this second character

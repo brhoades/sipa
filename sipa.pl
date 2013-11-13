@@ -49,14 +49,14 @@ while($in = <$fh>)
 
     #find [..] and /../
     my @subs;    
-    while( $in =~ m/(\/|\[)?([a-z\~\^\_\.\,\|\-\p{Letter}\p{Mark}\s]+)(\/|\])/gi )
+    while( $in =~ m/(\/|\[|\>)([a-z\~\^\_\.\,\|\-\p{Letter}\p{Mark}\s]+)(\/|\])/gi )
     {
         next if( not defined $2 );
         $match = $2;
         $original = $2;
         $start = $1;
         $end = $3;
-	checkInternals($start, $match);
+	check($end, $match);
 		
 	#d / t => d/t w/ dental        
         $dete += $match =~ s/(d|t)([^\|\_])/$1\x{032A}$2/g; #For some reason we need to match this second character
@@ -84,7 +84,7 @@ while($in = <$fh>)
         $diaeresis += $match =~ s/([a-z])\.\./$1\x{0308}/g;
 
 	#y^ => y with upside down ^ above
-        $lla += $match =~ s/([y])\^/$1\x{030C}/g;
+        $lla += $match =~ s/(y)\^/$1\x{030C}/g;
         
         #n + t / d => nd / nt w/ dental on n
         $ntd += $match =~ s/(n)-(t|d)/$1\x{032A}-$2/g;
@@ -171,4 +171,21 @@ sub checkInternals
 {
   my ($inside, $type) = @_;
 
+}
+
+sub check
+{
+  my ($type, $match) = @_;
+    
+  if( $type eq "/" )
+  {
+    if( $match =~ m/(w|[nm]\,|[aeiou]\~|h|q|c|ü|[áéíóú])/ )
+    {
+      print("Warning: $match contains $1 in phonemic\n");
+    }
+    elsif( $match !~ m/(_)/ && $match =~ m/[aeiou].*[aeiou].*[aeiou]/ )
+    {
+      print("Warning: $match lacks a stressed character\n");
+    }
+  }
 }

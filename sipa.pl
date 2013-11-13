@@ -26,7 +26,7 @@ system("unzip -qqo \"".$ARGV[0]."\" -d \"$out\"");
 print( ( -e $out ? "Done" : "Failed!" )."\n" );
 
 #Counters
-my ($tilde, $erre, $ches, $dete, $diaeresis, $underline, $double, $ktp) = 0;
+my ($tilde, $erre, $ches, $dete, $diaeresis, $underline, $double, $ktp, $ntd, $mnwifhook) = 0;
 
 my @file;
 my $fh;
@@ -49,7 +49,7 @@ while($in = <$fh>)
 
     #find [..] and /../
     my @subs;    
-    while( $in =~ m/(\/|\[)([a-z\~\^\_\.\|\-\p{Letter}\p{Mark}\s]+)(\/|\])/gi )
+    while( $in =~ m/(\/|\[)?([a-z\~\^\_\.\,\|\-\p{Letter}\p{Mark}\s]+)(\/|\])/gi )
     {
         next if( not defined $2 );
         $match = $2;
@@ -57,18 +57,9 @@ while($in = <$fh>)
         $start = $1;
         $end = $3;
 	checkInternals($start, $match);
-
-	#n + t / d => nd / nt w/ denta on n
-	#$ntd += $match =~ s/(n)(t|d)/$1\x{032A}$2/g;
-	$ntd += $match =~ s/(n)\-(t|d)/$1\x{032A}\-$2/g;
-
-
+		
 	#d / t => d/t w/ dental        
-        $dete += $match =~ s/(d|t)([^\|\_|\\])/$1\x{032A}$2/g; #For some reason we need to match this second character
-
-	#n, / m, => n / m with curly right side
-	$mnwifhook += $match =~ s/m\,/\x{0271}/g;
-	$mnwifhook += $match =~ s/n\,/\x{014B}/g;
+        $dete += $match =~ s/(d|t)([^\|\_])/$1\x{032A}$2/g; #For some reason we need to match this second character
 
 	#t| => t w/ baby sigma
         $ches += $match =~ s/t\|/t\x{0283}/g;
@@ -95,6 +86,13 @@ while($in = <$fh>)
 	#y^ => y with upside down ^ above
         $lla += $match =~ s/([y])\^/$1\x{030C}/g;
         
+        #n + t / d => nd / nt w/ dental on n
+        $ntd += $match =~ s/(n)-(t|d)/$1\x{032A}-$2/g;
+
+        #n, / m, => n / m with curly right side
+        $mnwifhook += $match =~ s/m[,]{1}/\x{0271}/g;
+        $mnwifhook += $match =~ s/n[,]{1}/\x{014B}/g;
+        
         push @subs, [$original, $match, $start, $end ] if( $match ne $original );
     }
     
@@ -103,8 +101,14 @@ while($in = <$fh>)
     {
         ($orig, $match, $start, $end) = @$sub;
         
-                
-        $in =~ s/\Q$start$orig$end\E/$start$match$end/;
+        if( defined $start )
+        {
+            $in =~ s/\Q$start$orig$end\E/$start$match$end/;
+        }
+        else
+        {
+            $in =~ s/\Q$orig$end\E/$match$end/;
+        }
     }
  
     push @file, $in;
@@ -130,6 +134,8 @@ print("Teeth (d/t):\t\t $dete\n");
 print("(b,t,k) allophones:\t $ktp\n");
 print("Underline:\t\t $underline\n");
 print("Double underline:\t $double\n");
+print("Dental N:\t\t $ntd\n");
+print("N / M velar:\t\t $mnwifhook\n");
 print("\n\n");
 
 ##Create the ODF

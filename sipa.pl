@@ -70,10 +70,10 @@ while($in = <$fh>)
         $ktp += $match =~ s/d\_/\x{03B4}/g;
         
 	#a,e,i,o,u~ => a,e,i,o,u w/ tilde below
-        $tilde +=  $match =~ s/([aeiou])\~/$1\x{0330}/g;	
+        $tilde += $match =~ s/([aeiou])\~/$1\x{0330}/g;
 
 	#r_ => r with line on top
-        $erre +=  $match =~ s/([r])_/$1\x{0304}/g; #305 is larger
+        $erre += $match =~ s/([r])_/$1\x{0304}/g; #305 is larger
 
 	#a,e,i,o,u_ => a,e,i,o,u w/ line below (stress)
         $underline += $match =~ s/([aeiou])\_/$1\x{0332}/g;
@@ -90,8 +90,8 @@ while($in = <$fh>)
         $ntd += $match =~ s/(n)-(t|d)/$1\x{032A}-$2/g;
 
         #n, / m, => n / m with curly right side
-        $mnwifhook += $match =~ s/m[,]{1}/\x{0271}/g;
-        $mnwifhook += $match =~ s/n[,]{1}/\x{014B}/g;
+        $mnwifhook += $match =~ s/m[,]/\x{0271}/g;
+        $mnwifhook += $match =~ s/n[,]/\x{014B}/g;
         
         push @subs, [$original, $match, $start, $end ] if( $match ne $original );
     }
